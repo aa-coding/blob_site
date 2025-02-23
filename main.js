@@ -1,6 +1,6 @@
 
 //TO DO: render func
-
+// test comment
 window.addEventListener("hashchange", (e) => {
 
     const urlHash = window.location.hash.substring(1);

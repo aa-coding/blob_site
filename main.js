@@ -4,8 +4,10 @@
 window.addEventListener("hashchange", (e) => {
 
     const urlHash = window.location.hash.substring(1);
-    renderPage(urlHash);
-
+    const urlHashSwitch = (Array.from((urlHash).matchAll("/")));
+    switch (urlHashSwitch.length) {
+        case 0 : renderPage(urlHash, mainTemplate, pagesContentsArray); 
+    };
     }
 );
 
@@ -37,51 +39,42 @@ const pagesContentsArray = [
 
 const section = document.querySelector("section");
 
+const mainTemplate = document.querySelector("#main-template");
+
 const clearPage = () => {
     //best (fastest) method to clear DOM:
     while (section.firstChild) section.removeChild(section.firstChild);
 }
 
-const renderPage = (pageID) => {
-
+const renderPage = (pageID, template, array) => {
     clearPage();
+    const section = document.querySelector("section");
+    section.appendChild(template.content.cloneNode(true));
 
-    const pageTemplate = document.querySelector("#page-template");
-    document.body.appendChild(pageTemplate.content.cloneNode(true));
-    
-    const title = document.querySelector("#title"); 
-
-    const pageObj = pagesContentsArray.find(item => item.id === pageID);
+    const pageObj = array.find(item => item.id === pageID);
 
     if (pageObj === undefined) {
        
         title.innerText = `error, page does not exist.`;  
 
-    } else if (pageObj.links) {
+    } else  {
 
-        title.innerText = pageObj.title;
-
-        pageObj.links.forEach( (link) => {
-            
-            
-        });
-    }
-
-    else {
-
-        title.innerText = pageObj.title;
+           if (pageObj.title) {
+            const title = document.querySelector("#title"); 
+            title.innerText = pageObj.title;
+           }; 
     };
-
 };
 
 const pageLinks = document.querySelectorAll("a");
 const pageLinksArray = Array.from(pageLinks);
 pageLinksArray.forEach( (link) => link.addEventListener("click", (e) => {
-
-    const pageID = e.target.id; 
+    
+    const pageID = e.target.attributes[0].value; 
     window.location.hash = `${pageID}`;
-    renderPage(pageID);
+    renderPage(pageID, mainTemplate, pagesContentsArray);
 })
 );
 
-renderPage("home");
+renderPage("home", mainTemplate, pagesContentsArray);
+window.location.hash = "home";
